@@ -7,12 +7,14 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    int nbCaracteres = strlen(argv[1]);
+    for (int i = 1; i <= argc -1; i++) {
+        int nbCaracteres = strlen(argv[i]);
 
-    for (int i = 0; i <= nbCaracteres; i++) {
-        printf("%c", argv[1][nbCaracteres - i]);
+        for (int j = 0; j <= nbCaracteres; j++) {
+            printf("%c", argv[i][nbCaracteres - j]);
+        }
+        printf("\n");
     }
-    printf("\n");
 
     return 0;
 }
