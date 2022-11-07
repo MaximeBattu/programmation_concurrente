@@ -4,8 +4,8 @@ csvPath = "./population.csv"
 
 population_totale = 0
 
-p_max = []
-p_min = []
+populationMax = []
+populationMin = []
 
 with open(csvPath) as fichier :
     reader = csv.reader(fichier)
@@ -20,19 +20,19 @@ with open(csvPath) as fichier :
             y, p = int(row[0]), int(row[1])
 
             # Init
-            if p_max == []:
-                p_max = [y, p]
-            if p_min == []:
-                p_min = [y, p]
+            if populationMax == []:
+                populationMax = [y, p]
+            if populationMin == []:
+                populationMin = [y, p]
             
             # Récupération des données
             population_totale += p
 
-            if p > p_max[1] :
-                p_max = [y, p]
-            if p < p_min[1] :
-                p_min = [y, p]
+            if p > populationMax[1] :
+                populationMax = [y, p]
+            if p < populationMin[1] :
+                populationMin = [y, p]
 
 moyenne = population_totale/(cpt)
 
-print(f"Pmin : {p_min}, Pmax : {p_max}, Moyenne : {moyenne}")
+print(f"Pmin : {populationMin}, Pmax : {populationMax}, Moyenne : {moyenne}")
