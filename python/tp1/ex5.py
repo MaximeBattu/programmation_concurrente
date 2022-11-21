@@ -2,7 +2,7 @@ import csv
 
 csvPath = "./population.csv"
 
-population_totale = 0
+populationTotale = 0
 
 populationMax = []
 populationMin = []
@@ -17,22 +17,22 @@ with open(csvPath) as fichier :
             
             cpt += 1
 
-            y, p = int(row[0]), int(row[1])
+            year, population = int(row[0]), int(row[1])
 
             # Init
             if populationMax == []:
-                populationMax = [y, p]
+                populationMax = [year, population]
             if populationMin == []:
-                populationMin = [y, p]
+                populationMin = [year, population]
             
             # Récupération des données
-            population_totale += p
+            populationTotale += population
 
-            if p > populationMax[1] :
-                populationMax = [y, p]
-            if p < populationMin[1] :
-                populationMin = [y, p]
+            if population > populationMax[1] :
+                populationMax = [year, population]
+            if population < populationMin[1] :
+                populationMin = [year, population]
 
-moyenne = population_totale/(cpt)
+moyenne = populationTotale/(cpt)
 
-print(f"Pmin : {populationMin}, Pmax : {populationMax}, Moyenne : {moyenne}")
+print(f"Population min : {populationMin}, Population max : {populationMax}, Moyenne : {moyenne}")
