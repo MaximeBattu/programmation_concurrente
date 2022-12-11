@@ -1,11 +1,22 @@
+"""
+    
+    4IRC
+    Exercice course hippique
+    Groupe :
+        - Maxime BATTU
+        - Eileen BALAGUER
+        - Batiste LALOI
+
+"""
+
 import random
 import time
 import multiprocessing as mp
 from multiprocessing import Pool
 
-NP_PROCESS = 4
+NB_PROCESS = 4
 
-def calculMonteCarlo(nbIteration):
+def calculMonteCarlo(nbIteration, queue = []):
     """
         calculer le nbr de hits dans un cercle unitaire (utilisé par les différentes méthodes)
     """
@@ -16,69 +27,80 @@ def calculMonteCarlo(nbIteration):
         # si le point est dans l’unit circle
         if x * x + y * y <= 1:
             count += 1
-
-    return count
+    if queue :
+        queue.put(count)
+    else :
+        return count
 
 
 def estimePI(count, nbIterations):
     """
         Permet d'estimer PI
     """
-    return 4 * sum(count) / nbIterations
+    return (4 * count) / nbIterations
 
 
-def multiprocess(nbIterations):
+def multiprocess(nbIterations, queue):
     """
         Méthode Monte Carlo en multi-processus
     """
-    start = time.time()
-
+    # Tableau de processus
+    processes = []
     # On divise le nombre d'itération par le nombre de processus
-    iterationsParProcess = [nbIterations/NP_PROCESS for i in range(NP_PROCESS)]
+    iterationsParProcess = [nbIterations/NB_PROCESS for i in range(NB_PROCESS)]
 
-    with Pool(processes=NP_PROCESS) as pool:
-        count = pool.map(calculMonteCarlo, iterationsParProcess)
-        pi = estimePI(count, nbIterations)
+    # Création du multiprocessing
+    for i in range(NB_PROCESS):
+        process = mp.Process(target=calculMonteCarlo, args=(iterationsParProcess[i], queue,))
+        processes.append(process)
+        process.start()
 
-    end = time.time()
-
-    temps = end - start
+    pi = 0
+    for process in processes:
+        process.join()
+        pi += estimePI(queue.get(), nbIterations)
 
     print(
-        f"Temps de traitement {temps:.2f} secondes pour {nbIterations} iterations en multiprocess")
-    print(
-        f"Valeur estimée Pi par la méthode Hit-Miss avec {NP_PROCESS} processus : {pi}")
+        f"Valeur estimée Pi par la méthode Hit-Miss avec {NB_PROCESS} processus : {pi}")
 
 
 def monoprocess(nbIterations):
     """
         Méthode Monte Carlo en mono-processus
     """
-    start = time.time()
-
     nbHits = calculMonteCarlo(nbIterations)
-    pi = 4 * nbHits / nbIterations
+    pi = estimePI(nbHits, nbIterations)
 
-    end = time.time()
-
-    temps = end - start
-
-    print(
-        f"Temps de traitement {temps:.2f} secondes pour {nbIterations} iterations en monoprocessus")
-    print(f"Valeur estimée Pi par la méthode Mono−Processus {pi}")
+    print(f"Valeur estimée Pi par la méthode Hit-Miss en mono-processus : {pi}")
 
 
 if __name__ == "__main__":
-    
+    queue = mp.Queue()
+
     # Nombre d’essai pour l’estimation
     nbIterations = 100_000_000
     
     print("Début du multiprocessing")
+    start = time.time()
 
-    multiprocess(nbIterations)
-    
+    multiprocess(nbIterations, queue)
+
+    end = time.time()
+    temps = end - start
+
+    print(
+        f"Temps de traitement {temps:.2f} secondes pour {nbIterations} iterations en monoprocessus")
     print("Fin du multiprocessing\n")
+
     print("Début du monoprocessus")
+    start = time.time()
+
     monoprocess(nbIterations)
+
+    end = time.time()
+    temps = end - start
+
+    print(
+        f"Temps de traitement {temps:.2f} secondes pour {nbIterations} iterations en multiprocess")
     print("Fin du monoprocessus")
 
