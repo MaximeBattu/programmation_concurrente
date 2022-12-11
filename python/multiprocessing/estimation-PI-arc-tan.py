@@ -1,12 +1,10 @@
 """
-    
     4IRC
     Exercice course hippique
     Groupe :
         - Maxime BATTU
         - Eileen BALAGUER
         - Batiste LALOI
-
 """
 
 import time
@@ -40,7 +38,6 @@ def multiprocess(nbIterations, queue):
 
     # On divise le nombre d'itération par le nombre de processus
     iterationsParProcess = [nbIterations/NB_PROCESS for i in range(NB_PROCESS)]
-
 
     # Création du multiprocessing
     for i in range(NB_PROCESS):

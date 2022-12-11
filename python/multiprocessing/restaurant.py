@@ -1,3 +1,14 @@
+"""
+    
+    4IRC
+    Exercice course hippique
+    Groupe :
+        - Maxime BATTU
+        - Eileen BALAGUER
+        - Batiste LALOI
+
+"""
+
 CLEARSCR="\x1B[2J\x1B[;H"          #  Clear SCReen
 CLEAREOS = "\x1B[J"                #  Clear End Of Screen
 CLEARELN = "\x1B[2K"               #  Clear Entire LiNe

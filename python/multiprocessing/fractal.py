@@ -1,4 +1,13 @@
-# -*- coding: utf-8 -*-
+"""
+    
+    4IRC
+    Exercice course hippique
+    Groupe :
+        - Maxime BATTU
+        - Eileen BALAGUER
+        - Batiste LALOI
+
+"""
 import multiprocessing as mp
 import os
 import sys

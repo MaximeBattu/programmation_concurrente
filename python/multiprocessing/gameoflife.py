@@ -1,3 +1,13 @@
+"""
+    
+    4IRC
+    Exercice course hippique
+    Groupe :
+        - Maxime BATTU
+        - Eileen BALAGUER
+        - Batiste LALOI
+
+"""
 import time
 import random
 import os
