@@ -90,14 +90,15 @@ if __name__ == "__main__":
         nbCalcul, expressionCalculs, queueResult, keepCalculating))
     
     for i in range(nbCalcul):
-        child = mp.Process(target=fils, args=(
-        i, expressionCalculs, queueResult, keepCalculating))
+        child = mp.Process(target=fils, args=(expressionCalculs, queueResult, keepCalculating))
         childProcesses.append(child)
 
+    # Démarrage des processus demandeur et calculateurs
     app.start()
     for i in range(nbCalcul):
         childProcesses[i].start()
 
+    # Attente des processus demandeur et calculateurs
     app.join()
     for i in range(nbCalcul):
         childProcesses[i].join()

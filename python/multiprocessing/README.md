@@ -31,7 +31,19 @@ Travail réalisé
 
 ## Faites des calculs (calculateurs & demandeurs) (3-5pts)
 
+### Version 1 demandeur, `n` calculateurs
+  Le programme principal crée un certain nombre de processus "calculateurs" (par défaut, 2) qui attendent des expressions de calcul à résoudre dans une file d'attente (Queue). Un autre processus, appelé "demandeur", génère des expressions de calcul aléatoires et les met dans la file d'attente (Queue) pour être résolues par les processus "calculateurs". Les processus "calculateurs" résolvent les expressions de calcul et mettent le résultat dans une autre file d'attente (Queue). Le processus "demandeur" récupère les résultats des processus "calculateurs" et les affiche à l'écran. Le programme se termine lorsque tous les calculs ont été effectués.
+  - exemple de stack trace :
+  - ```
+    Combien de calculs voulez-vous lancer ? 2 par défaut
 
+    Combien de processus calculateurs ? 2 par défaut
+
+    Le fils a recu 3+4
+    Dans fils, le résultat = 7
+    Le fils a envoyé 7
+    3+4 = 7
+    ```
 
 ## Gestionnaire des Billes (5pts)
 
