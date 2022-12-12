@@ -194,8 +194,254 @@ Tout du long de cet exercice j'ai utilisé un Locker pour éviter que deux proce
     Commande 25R est servie au client
   ```
 
-##  Game of life (5pts)
+## Fractales (3 pts)
+
+Récupération du code mono-process donné, et adaptation en multi-process
+
+### Travail réalisé
+- Transformation du code en programme multi-process grâce à la fonction `multiProcess()` qui utilise une pack de processus qui vont gérer `NB_PROCESS` de lignes à la fois, puis effectuer un roulement pour faire le rendu des prochaines lignes disponibles. Ajout d'une barre de chargement pour afficher l'avancé du rendu :
+```python
+def multiProcess():
+    #  Créer un pool de processus
+    for pack in range(size//NB_PROCESS):
+        # On les lance chacun sur la prochaine ligne à render
+        # Prochaine ligne à traiter = pack * NB_PROCESS + line
+        for line in range(NB_PROCESS):
+            p = mp.Process(target=render_line, args=(pack*NB_PROCESS+line, image))
+            p.start()
+        
+        # On attends bien la fin de tous les processus
+        for line in range(NB_PROCESS):
+            p.join()
+
+        # Afficher la progression du rendu sous la forme d'une barre de chargement
+        percentCompletion = round(pack * 100 / (size//NB_PROCESS))
+        print("[" + "=" * (percentCompletion//2) + " " * (50 - percentCompletion//2) + "] " + str(percentCompletion) + "%", end="\r")
+
+```
+
+- Récupération du nombre de process voulu par l'utilisateur, avec affichage du nombre de coeur disponible sur sa machine :
+```python
+print(f"Image de taille {size}x{size}")
+NB_PROCESS = int(input(f"Entrer un nombre de processus (Entre 1 et {mp.cpu_count()}): "))
+print(f"Rendu de l'image en cours avec {NB_PROCESS} processus...")
+```
+
+- Calcul du temps de rendu de l'image :
+```python
+import time
+
+# Démarrage du timer
+start_time = time.time()
+
+# Lancement du programme de rendu de l'image
+multiProcess()
+
+# Fin du timer
+end_time = time.time()
+
+# Affichage du temps de rendu, avec deux chiffres après la virgule
+print(f"\nTemps d'exécution: {end_time - start_time:.2f} secondes")
+```
 
 
-##  Fractal (3pts)
+### Trace
+
+Voici l'affichage en console lors de l'éxécution du programme : 
+```console
+$> python3 fractal.py
+Image de taille 1000x1000
+Entrer un nombre de processus (Entre 1 et 16): 10
+Rendu de l'image en cours avec 10 processus...
+[===========================                       ] 55%
+```
+
+Résultat du rendu de l'image fractale en 1000x1000 (2K) : 
+
+![Image Fractal 1000x1000](./image/fractale.png)
+
+## Game Of Life (5 pts)
+
+Création d'un clone du Jeu de la Vie créé par Horton Conway, en utilisant du multiprocessing
+
+### Travail réalisé
+
+- Création d'un pack de `NB_PROCESS` processus qui effectuent un roulement de la même manière que le programme des **Fractales** : 
+```python
+NB_PROCESS = 5
+
+# Pack de processus
+    for pack in range(TAILLE//NB_PROCESS):
+        for line in range(NB_PROCESS) :
+            p = mp.Process(target=render_line, args=(pack*NB_PROCESS + line, current_grid, next_grid))
+            p.start()
+        
+        for _ in range(NB_PROCESS):
+            p.join()
+```
+
+- Création de deux grilles partagées, représentatnt la génération actuelle et la prochaine. Création de deux tableaux à deux dimensions grâce à la bibliothèque **Numpy**:
+```python
+TAILLE = 30
+
+# Création de deux tableaux à deux dimensions partagés
+shared_current_grid = mp.Array(ctypes.c_int, TAILLE * TAILLE)
+shared_next_grid = mp.Array(ctypes.c_int, TAILLE * TAILLE)
+
+# Création d'un tableau numpy à partir des données partagées
+current_grid = np.frombuffer(shared_current_grid.get_obj(), ctypes.c_int)
+next_grid = np.frombuffer(shared_next_grid.get_obj(), ctypes.c_int)
+
+# Raformer le tableau en un tableau à deux dimensions
+current_grid = current_grid.reshape((TAILLE, TAILLE))
+next_grid = next_grid.reshape((TAILLE, TAILLE))
+```
+
+- Définition d'une fonction d'affichage de la grille : 
+```python
+def display_grid(grid):
+    # Affichage d'une ligne en haut pour encadrer la grille
+    print("_" * (2 * TAILLE + 1))
+
+    for line in grid:
+        # Affichage d'une ligne à gauche pour encadrer la grille
+        print("|", end="")
+
+        # Boucle d'affichage
+        for cell in line:
+            if cell == 0:
+                print("  ", end="")
+            else:
+                print("██", end="")
+
+        # Affichage d'une ligne à droite pour encadrer la grille
+        print("|")
+    
+    # Affichage d'une ligne en bas pour encadrer la grille
+    print("‾" * (2*TAILLE + 1))
+```
+
+- Fonction d'ajout d'un "glider" (un vaisseau qui se propage), pour tester le bon fonctionnement des règles du jeu :
+```python
+def addGlider(x, y, grid):
+    glider = np.array([[0,   0, 1], [1,  0, 1], [0,  1, 1]])
+    grid[x:x+3, y:y+3] = glider
+
+# Ajout d'une glider dans la grille de départ à la case [1:1]
+addGlider(1, 1, current_grid)
+```
+
+Affichage de la grille avec le vaisseau après 35 générations : 
+```console
+_____________________________________________________________
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                    ██  ██                                  |
+|                      ████                                  |
+|                      ██                                    |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+|                                                            |
+‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+Génération numéro : 35
+```
+
+- Rendu final : Remplissage aléatoire de la grille de départ :
+```python
+import random
+
+# On remplis de manière aléatoire la grille, avec 20% de chance d'avoir une cellule vivante
+for i in range(TAILLE):
+    for j in range(len(current_grid[i])):
+        if random.randint(0, 4) == 0:
+            current_grid[i][j] = 1
+```
+
+- Fonctions de gestions des règles et création de la prochaine génération de cellules : 
+```python
+
+# Fonction qui renvoie le nombre de voisins vivants d'une cellule donnée
+def living_neighbours_count(x, y, grid):
+    count = 0
+    for i in range(-1, 2):
+        for j in range(-1, 2):
+            if i == 0 and j == 0:
+                continue
+            elif x + i < 0 or x + i >= TAILLE or y + j < 0 or y + j >= TAILLE:
+                continue
+            elif grid[x + i][y + j] == 1:
+                count += 1
+    return count
+
+# Fonction qui traite une cellule
+def render_cell(x, y, current_grid, next_grid):
+    living_neighbours = living_neighbours_count(x, y, current_grid)
+    if current_grid[x][y] == 1:
+        if living_neighbours == 2 or living_neighbours == 3:
+            next_grid[x][y] = 1
+        else :
+            next_grid[x][y] = 0
+    else:
+        if living_neighbours == 3:
+            next_grid[x][y] = 1
+
+
+# Fonction qui traite une ligne à la fois, executée par les processus
+def render_line(line, current_grid, next_grid):
+    for cell in range(TAILLE):
+        render_cell(line, cell, current_grid, next_grid)
+```
+
+- Boucle de jeu : 
+```python
+while True:
+
+    # Effacer l'écran
+    move_to(0, 0)
+
+    # Pack de processus
+    for pack in range(TAILLE//NB_PROCESS):
+        for line in range(NB_PROCESS) :
+            p = mp.Process(target=render_line, args=(pack*NB_PROCESS + line, current_grid, next_grid))
+            p.start()
+        
+        for _ in range(NB_PROCESS):
+            p.join()
+
+    display_grid(next_grid)
+
+    # Actualisation de la grille actuelle avec la nouvelle génération
+    for i in range(TAILLE):
+        for j in range(len(next_grid[i])):
+            current_grid[i][j] = next_grid[i][j]
+    
+    cpt += 1
+    print(f"Génération numéro : {cpt}")
+```
+
+### Trace :
+
+Comme le rendu dans le console est dynamique, voici une vidéo de l'affichage dans la console, avec à gauche le jeu de la vie qui tourne dans une grille de 30x30, et à droite un affichage de HTOP, dans lequel on peut voir le charge réparties sur les différents coeurs du processeur de l'ordinateur : [Démo Game Of Life](https://youtu.be/c_IjUaFmcEo)
 
