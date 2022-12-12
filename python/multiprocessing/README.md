@@ -1,9 +1,8 @@
 # Multiprocessing - S7
 
-Dans le cadre du module "Système d'exploitation et programmation concurrente", nous avons eu à réaliser différents exercices portant sur le principe de la parallélisation de processus (multiprocessing).
-Pour ce faire nous avons dû réaliser différents exercices chacun rapportant un certain nombre de point. Comme nous sommes trois dans notre groupe nous devons faire pour 30 points minimum d'exercice.
+Dans le cadre du module "Système d'exploitation et programmation concurrente", nous avons dû réaliser différents exercices portant sur la parallélisation de processus (multiprocessing). Pour ce faire, nous avons dû réaliser différents exercices, chacun rapportant un certain nombre de points. Comme nous sommes trois dans notre groupe, nous devons atteindre un minimum de 30 points d'exercices.
 
-Suite aux recommandations des professeurs référents de la matière, les exercices portants sur le tri (tri rapide, tri merge ...) n'ont pas été réalisés car jugés comme s'éloignant trop de la logique du multiprocessing abordée en cours.
+Suivant les recommandations des professeurs référents de la matière, les exercices portant sur le tri (tri rapide, tri merge, etc.) n'ont pas été réalisés car ils s'éloignent trop de la logique du multiprocessing abordée en cours.
 
 Fait en trinôme : 4-IRC
 
@@ -11,11 +10,25 @@ Fait en trinôme : 4-IRC
 - BATTU Maxime <br>
 - LALOI Batiste <br>
 
-# Exercices réalisés
+# Exercices réalisés (total: 42pts)
+
+- Course Hippique (3pts)
+- Faites des calculs (3pts)
+- Gestionnaire de Billes (5pts)
+- Estimation de PI
+  - Monte Carlo (3pts)
+  - Arc-tangente (3pts)
+  - Loi espérance (3pts)
+- Contrôleur de température (4pts)
+- Simulateur du robot (5pts)
+- Système restaurant (5pts)
+- Game of life (5pts)
+- Fractal (3pts)
+
 
 ## Courses Hippique (3pts)
 
-Récupération du code donné, étude et compréhension de ce dernier. Plusieurs tests effectués pour comprendre le multiprocessing et son intéret dans cet exercice. Après quelques manipulations nous avons pris le code en main et rajouter différentes modifications au code donné.
+Récupération du code donné, étude et compréhension de ce dernier. Plusieurs tests ont été effectués pour comprendre le multiprocessing et son intérêt dans cet exercice. Après quelques manipulations, nous avons pris le code en main et ajouté différentes modifications au code initial.
 
 Travail réalisé
 - Mise en place d'un processus arbitre qui affiche en permanence le cheval qui est en tête ainsi que celui qui est dernier 
@@ -32,9 +45,9 @@ Travail réalisé
 ## Faites des calculs (calculateurs & demandeurs) (3-5pts)
 
 ### Version 1 demandeur, `n` calculateurs
-  Le programme principal crée un certain nombre de processus "calculateurs" (par défaut, 2) qui attendent des expressions de calcul à résoudre dans une file d'attente (Queue). Un autre processus, appelé "demandeur", génère des expressions de calcul aléatoires et les met dans la file d'attente (Queue) pour être résolues par les processus "calculateurs". Les processus "calculateurs" résolvent les expressions de calcul et mettent le résultat dans une autre file d'attente (Queue). Le processus "demandeur" récupère les résultats des processus "calculateurs" et les affiche à l'écran. Le programme se termine lorsque tous les calculs ont été effectués.
+Le programme principal crée un certain nombre de processus "calculateurs" (par défaut, 2) qui attendent des expressions de calcul à résoudre dans une file d'attente (Queue). Un autre processus, appelé "demandeur", génère des expressions de calcul aléatoires et les met dans la file d'attente (Queue) pour être résolues par les processus "calculateurs". Les processus "calculateurs" résolvent les expressions de calcul et mettent le résultat dans une autre file d'attente (Queue). Le processus "demandeur" récupère les résultats des processus "calculateurs" et les affiche à l'écran. Le programme se termine lorsque tous les calculs ont été effectués.
   - exemple de stack trace :
-  - ```
+  ```
     Combien de calculs voulez-vous lancer ? 2 par défaut
 
     Combien de processus calculateurs ? 2 par défaut
@@ -43,23 +56,23 @@ Travail réalisé
     Dans fils, le résultat = 7
     Le fils a envoyé 7
     3+4 = 7
-    ```
+  ```
 
 ## Gestionnaire des Billes (5pts)
 
-Cet exercice était assez guidé. On comprend qu'on a N joueurs (processus) qui ont chacun besoin d'un nombre k de ressources. Donc je commence mon code par demandé le nombre de joueur N et pour chaque joueur le nombre k de ressources nécessaires pour lui.
+Cet exercice était assez guidé. On comprend qu'on a N joueurs (processus) qui ont chacun besoin d'un nombre k de ressources. Donc, je commence mon code en demandant le nombre de joueurs N, et pour chaque joueur, le nombre k de ressources nécessaires pour lui.
 
-Ensuite je demande le nombre d'itérations pour pouvoir répéter m fois la séquence. 
+Ensuite, je demande le nombre d'itérations pour pouvoir répéter la séquence m fois.
 
-Je mets en place une variable protégée pour permettre aux joueurs d'accéder aux billes chacun leur tour, évitant ainsi de se retrouve avec -8 billes.
+Je mets en place une variable protégée pour permettre aux joueurs d'accéder aux ressources chacun leur tour, évitant ainsi de se retrouver avec un nombre négatif de ressources.
 
-Je créé un processus Contrôleur qui, toutes les secondes, va vérifier que mon nombre de billes est supérieur à 0 et inférieur au nombre maximum de billes disponible.
+Je crée un processus contrôleur qui, toutes les secondes, vérifie que le nombre de ressources est supérieur à 0 et inférieur au nombre maximum de ressources disponibles.
 
-Une fois fait, j'ai créé mes processus joueur qui répète la séqunce m fois de "prendre ; utiliser ; rendre". 
+Une fois fait, j'ai créé mes processus joueur qui répètent la séquence m fois de "prendre, utiliser, rendre".
 
-Mon "prendre" est représenté par une fonction qui utilise la variable protégée pour prélever le nombre de billes voulues dans le stock quand personne n'agit avec.
-Mon "utiliser" est représenté par un time.sleep(2) qui va donner 2 secondes de temps d'attente.
-Mon "rendre" est représenté par une fonction qui utilise la variable protégée pour rendre le nombre de billes voulues dans le stock quand personne n'agit avec.
+Mon "prendre" est représenté par une fonction qui utilise la variable protégée pour prélever le nombre de ressources voulu dans le stock quand personne n'agit avec.
+Mon "utiliser" est représenté par un time.sleep(2) qui va donner 2 secondes d'attente.
+Mon "rendre" est représenté par une fonction qui utilise la variable protégée pour rendre le nombre de ressources voulu dans le stock quand personne n'agit avec.
 
 - stack trace :
     ```
@@ -103,14 +116,13 @@ Mon "rendre" est représenté par une fonction qui utilise la variable protégé
 
 ##  Estimation de PI
 
-Le but ici était de réussir à estimer la valeur de PI à partir de différentes techniques mathématiques.
-Nous devions donner un grand nombre d'itérations (100 000 000 dans notre cas) pour se rapprocher au plus possible de la valeur de PI.
+Le but ici est d'estimer la valeur de PI à l'aide de différentes techniques mathématiques. Nous devons donner un grand nombre d'itérations (100 000 000 dans notre cas) pour se rapprocher au plus près de la valeur de PI.
 
-Un code nous était donné, cependant il était "mono-processus" nous devions alors le modifier pour mettre en place du multiprocessing à la place
+Un code nous a été donné, mais il était "mono-processus", nous devons donc le modifier pour mettre en place du multiprocessing à la place.
 
 ### Version Hit-Miss Monte Carlo (3pts)
 
-Cette technique mathématique sert à déterminer la surface d'un quart du cercle trigonométrique et d'ensuite multiplier le résultat obtenu par le nombre de quart contenu dans un cercle, grâce à quoi nous pouvons obtenir une approximation de PI.
+Cette technique mathématique sert à déterminer la surface d'un quart de cercle trigonométrique, puis à multiplier le résultat obtenu par le nombre de quarts contenus dans un cercle complet pour obtenir une approximation de PI.
 
 - contient un main qui appelle 2 différentes méthodes
     - multiprocess(nbIterations)
@@ -155,16 +167,17 @@ Même principe que la première estimation de pi avec une technique mathématiqu
 
 ##  Un système multi-tâches de simulation d'un restaurant (5pts)
 
-Pour cet exercice je l'ai découpé en trois parties : client ; serveur ; majorHomme
-Je commence par demander dans cet exercice le nombre de serveurs qui vont pouvoir prendre des commandes et le nombre de commande à traiter.
+Pour cet exercice, j'ai découpé le code en trois parties : client, serveur et majorHomme.
 
-La partie cliente s'occupe de créer les commandes à traiter. Pour cela, il va rajouter une commande (concaténation entre un chiffre et une lettre) toutes les 1 à 4 secondes.
+Je commence par demander le nombre de serveurs et le nombre de commandes à traiter.
 
-Les serveurs vont prendre chacun leur tour une commande dans la liste de celles qui sont en attente, ils mettront entre 3 et 5 secondes pour la traiter et une fois fait ils remplissent une variable qui indiquera la dernière commande servie.
+La partie cliente s'occupe de créer les commandes à traiter. Pour cela, elle ajoute une commande (concaténation entre un chiffre et une lettre) toutes les 1 à 4 secondes.
 
-Le majorHomme quant à lui va venir afficher tout ça. Il va afficher 1 ligne par serveur qui va indiquer la commande qu'il est en train de traiter. Ensuite il indiquera les commandes qui sont dans le tableau d'attente, le nombre qu'elles sont, et la dernière commande servie.
+Les serveurs prennent chacun leur tour une commande dans la liste des commandes en attente, et mettent entre 3 et 5 secondes pour la traiter. Une fois la commande traitée, ils remplissent une variable indiquant la dernière commande servie.
 
-Tout du long de cet exercice j'ai utilisé un Locker pour éviter que deux processus écrivent en même temps sur mes tableaux et donc limiter les erreurs dans le traitement des commandes
+Le majorHomme affiche les informations. Il affiche une ligne par serveur, indiquant la commande en cours de traitement. Ensuite, il affiche les commandes en attente, leur nombre, et la dernière commande servie.
+
+Tout au long de l'exercice, j'ai utilisé un verrou (locker) pour éviter que deux processus écrivent simultanément dans mes tableaux, et ainsi éviter les erreurs dans le traitement des commandes.
 
 - Exemples de stack trace:
   ```
@@ -196,7 +209,7 @@ Tout du long de cet exercice j'ai utilisé un Locker pour éviter que deux proce
 
 ## Température et pression
 
-Mise en place un système temps réel embarqué pour maintenir la température et la pression d'un processus chimique dans des limites spécifiées. Le système comprend plusieurs entités concurrentes, un contrôleur pour coordonner l'ensemble, et une zone mémoire partagée protégée par un verrou ou un sémaphore.
+Pour maintenir la température et la pression d'un processus chimique dans des limites spécifiées, j'ai mis en place un système temps réel embarqué. Ce système comprend plusieurs entités concurrentes, un contrôleur pour coordonner l'ensemble, et une zone mémoire partagée protégée par un verrou ou un sémaphore.
 
 - Les entités :
   - Controller
@@ -205,7 +218,7 @@ Mise en place un système temps réel embarqué pour maintenir la température e
       - `Pompe` mesure la pression dans le système
       - `Chauffage` mesure la température dans le système
 
-Pour réaliser ça nous avons créer plusieurs variables partagées permettant d'avoir une information partagée entre plusieurs processus et un locker pour protéger la zone de mémoire.
+Pour réaliser cela, nous avons créé plusieurs variables partagées pour permettre l'accès à des informations par plusieurs processus, ainsi qu'un verrou pour protéger la zone de mémoire.
 
 - Stack trace :
 - ```
@@ -223,7 +236,7 @@ Pour réaliser ça nous avons créer plusieurs variables partagées permettant d
 Récupération du code mono-process donné, et adaptation en multi-process
 
 ### Travail réalisé
-- Transformation du code en programme multi-process grâce à la fonction `multiProcess()` qui utilise une pack de processus qui vont gérer `NB_PROCESS` de lignes à la fois, puis effectuer un roulement pour faire le rendu des prochaines lignes disponibles. Ajout d'une barre de chargement pour afficher l'avancé du rendu :
+- Transformation du code en programme multi-processus grâce à la fonction multiProcess() qui utilise un groupe de processus pour gérer NB_PROCESS lignes simultanément, puis effectue un roulement pour traiter les lignes suivantes. J'ai ajouté une barre de progression pour afficher l'avancement du rendu.
 ```python
 def multiProcess():
     #  Créer un pool de processus
