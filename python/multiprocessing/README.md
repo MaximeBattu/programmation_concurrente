@@ -194,6 +194,30 @@ Tout du long de cet exercice j'ai utilisé un Locker pour éviter que deux proce
     Commande 25R est servie au client
   ```
 
+## Température et pression
+
+Mise en place un système temps réel embarqué pour maintenir la température et la pression d'un processus chimique dans des limites spécifiées. Le système comprend plusieurs entités concurrentes, un contrôleur pour coordonner l'ensemble, et une zone mémoire partagée protégée par un verrou ou un sémaphore.
+
+- Les entités :
+  - Controller
+    - Controle les valeurs récupérées `température` et `pression` afin de déterminer si les différents acteurs du système doivent s'arreter ou continuer de fonctionner
+    - Acteurs
+      - `Pompe` mesure la pression dans le système
+      - `Chauffage` mesure la température dans le système
+
+Pour réaliser ça nous avons créer plusieurs variables partagées permettant d'avoir une information partagée entre plusieurs processus et un locker pour protéger la zone de mémoire.
+
+- Stack trace :
+- ```
+    Température : 11.34 °C
+    Pression : 1.06 bar
+
+    Chauffage : ON
+    Pompe : ON
+    ```
+
+**Ctrl + c |Ctrl + Z pour arrêter le programme**
+
 ## Fractales (3 pts)
 
 Récupération du code mono-process donné, et adaptation en multi-process
@@ -259,6 +283,7 @@ Rendu de l'image en cours avec 10 processus...
 Résultat du rendu de l'image fractale en 1000x1000 (2K) : 
 
 ![Image Fractal 1000x1000](./image/fractale.png)
+
 
 ## Game Of Life (5 pts)
 
