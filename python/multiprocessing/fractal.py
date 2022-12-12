@@ -8,6 +8,7 @@
         - Batiste LALOI
 
 """
+# -*- coding: utf-8 -*-
 import multiprocessing as mp
 import os
 import sys
@@ -16,7 +17,7 @@ import time
 
 size = 1000
 zoo = pow(0.5, 13.0 * 0.7)
-percentCompletion = 0
+percentCompletion = 1
 
 print(f"Image de taille {size}x{size}")
 NB_PROCESS = int(input(f"Entrer un nombre de processus (Entre 1 et {mp.cpu_count()}): "))
