@@ -14,7 +14,7 @@ NB_PROCESS = 4
 
 def arc_tangente(nbIteration, queue):
     """
-        calculer le nbr de hits dans un cercle unitaire (utilisé par les différentes méthodes)
+        Calcule l'air d'un quart de cercle trigonométrique par la méthode arc-tangente.
     """
     pi = 0
     for i in range(int(nbIteration)):
@@ -22,19 +22,16 @@ def arc_tangente(nbIteration, queue):
 
     queue.put(pi)
 
+if __name__ == "__main__":
+    queue = mp.Queue()
 
-def estimePI(piArcTan, nbIterations):
-    """
-        Permet d'estimer PI
-    """
-    return (1/nbIterations) * float(piArcTan)
-
-
-def multiprocess(nbIterations, queue):
-    """
-        Méthode Monte Carlo en multi-processus
-    """
+    # Nombre d’essai pour l’estimation
+    nbIterations = 100_000_000
+    
+    # Tableau de processes
     processes = []
+    
+    start = time.time()
 
     # On divise le nombre d'itération par le nombre de processus
     iterationsParProcess = [nbIterations/NB_PROCESS for i in range(NB_PROCESS)]
@@ -48,20 +45,10 @@ def multiprocess(nbIterations, queue):
     pi = 0
     for process in processes:
         process.join()
-        pi += estimePI(queue.get(), nbIterations)
+        pi += (1/nbIterations) * float(queue.get())
 
     print(
-        f"Valeur estimée Pi par la méthode arc-tangente avec {NB_PROCESS} processus : {pi}")
-
-if __name__ == "__main__":
-    queue = mp.Queue()
-
-    # Nombre d’essai pour l’estimation
-    nbIterations = 100_000_000
-    
-    start = time.time()
-
-    multiprocess(nbIterations, queue)    
+        f"Valeur estimée Pi par la méthode arc-tangente avec {NB_PROCESS} processus : {pi}")   
     
     end = time.time()
 

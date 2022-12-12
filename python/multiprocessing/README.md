@@ -30,7 +30,65 @@ Travail réalisé
 
 
 ## Faites des calculs (calculateurs & demandeurs) (3-5pts)
+
+
+
 ## Gestionnaire des Billes (5pts)
+
+Cet exercice était assez guidé. On comprend qu'on a N joueurs (processus) qui ont chacun besoin d'un nombre k de ressources. Donc je commence mon code par demandé le nombre de joueur N et pour chaque joueur le nombre k de ressources nécessaires pour lui.
+
+Ensuite je demande le nombre d'itérations pour pouvoir répéter m fois la séquence. 
+
+Je mets en place une variable protégée pour permettre aux joueurs d'accéder aux billes chacun leur tour, évitant ainsi de se retrouve avec -8 billes.
+
+Je créé un processus Contrôleur qui, toutes les secondes, va vérifier que mon nombre de billes est supérieur à 0 et inférieur au nombre maximum de billes disponible.
+
+Une fois fait, j'ai créé mes processus joueur qui répète la séqunce m fois de "prendre ; utiliser ; rendre". 
+
+Mon "prendre" est représenté par une fonction qui utilise la variable protégée pour prélever le nombre de billes voulues dans le stock quand personne n'agit avec.
+Mon "utiliser" est représenté par un time.sleep(2) qui va donner 2 secondes de temps d'attente.
+Mon "rendre" est représenté par une fonction qui utilise la variable protégée pour rendre le nombre de billes voulues dans le stock quand personne n'agit avec.
+
+- stack trace :
+    ```
+    Nombre de processus : 3
+    Nombre d'itérations : 2
+    Nombre max de billes : 8
+    Ressources requises : 4
+    Ressources requises : 3
+    Ressources requises : 5
+    Process n° 1  demande. Ressources dispo :  8
+    Process n° 1  a reçu. Ressources dispo :  5
+    Process n° 1  utilise ses ressources
+    Process n° 2  demande. Ressources dispo :  8
+    Process n° 0  demande. Ressources dispo :  8
+    Process n° 0  a reçu. Ressources dispo :  4
+    Process n° 0  utilise ses ressources
+    Process n° 2  a reçu. Ressources dispo :  3
+    Process n° 2  utilise ses ressources
+    Process n° 1  rends. Ressources dispo :  5
+    Process n° 1  a rendu. Ressources dispo :  8
+    Process n° 1  demande. Ressources dispo :  8
+    Process n° 1  a reçu. Ressources dispo :  5
+    Process n° 1  utilise ses ressources
+    Process n° 0  rends. Ressources dispo :  4
+    Process n° 0  a rendu. Ressources dispo :  8
+    Process n° 0  demande. Ressources dispo :  8
+    Process n° 0  a reçu. Ressources dispo :  4
+    Process n° 0  utilise ses ressources
+    Process n° 2  rends. Ressources dispo :  3
+    Process n° 2  a rendu. Ressources dispo :  8
+    Process n° 2  demande. Ressources dispo :  8
+    Process n° 2  a reçu. Ressources dispo :  3
+    Process n° 2  utilise ses ressources
+    Process n° 1  rends. Ressources dispo :  5
+    Process n° 1  a rendu. Ressources dispo :  8
+    Process n° 0  rends. Ressources dispo :  4
+    Process n° 0  a rendu. Ressources dispo :  8
+    Process n° 2  rends. Ressources dispo :  3
+    Process n° 2  a rendu. Ressources dispo :  8
+    ```
+
 ##  Estimation de PI
 
 Le but ici était de réussir à estimer la valeur de PI à partir de différentes techniques mathématiques.
@@ -45,8 +103,11 @@ Cette technique mathématique sert à déterminer la surface d'un quart du cercl
 - contient un main qui appelle 2 différentes méthodes
     - multiprocess(nbIterations)
         - Découper le nombre d'itération par le nombre de processus
-        - 
+        - Appeler les différents processus avec un nombre d'itérations calculé précédemment
+        - Récupérer le résultat mis dans une Queue
+        - Estimer la valeur de pi
     - monoprocess(nbIterations)
+        - Le calcul mathématique est le même nous utilisons simplement 1 seul et unique processus qui devrait effectué le calcul hit-miss pour les N estimations contrairement au code multiprocessus
 - stack trace :
     ``` 
         Début du multiprocessing
@@ -59,7 +120,70 @@ Cette technique mathématique sert à déterminer la surface d'un quart du cercl
         Valeur estimée Pi par la méthode Hit-Miss en mono-processus : X.XXXXXXX
         Fin mu monoprocessus
     ```
-### Version Arc-tangante
+### Version Arc-tangante (3pts)
+
+Même principe que la première estimation de pi avec une technique mathématique différente.
+
+- stack trace :
+    ``` 
+        Valeur estimée Pi par la méthode arc-tangente en multiprocess : X.XXXXXXX
+        Temps de traitement XX.XX secondes pour X iterations en monoprocessus
+    ```
+
+### Version par l'espérance (3pts)
+
+Même principe que la première estimation de pi avec une technique mathématique différente.
+
+- stack trace :
+    ``` 
+        Valeur estimée Pi par la méthode arc-tangente avec X processus : X.XXXXXX...
+        Temps de traitement XX.XX secondes pour X iterations en multiprocess
+    ```
+
+
 ##  Un système multi-tâches de simulation d'un restaurant (5pts)
+
+Pour cet exercice je l'ai découpé en trois parties : client ; serveur ; majorHomme
+Je commence par demander dans cet exercice le nombre de serveurs qui vont pouvoir prendre des commandes et le nombre de commande à traiter.
+
+La partie cliente s'occupe de créer les commandes à traiter. Pour cela, il va rajouter une commande (concaténation entre un chiffre et une lettre) toutes les 1 à 4 secondes.
+
+Les serveurs vont prendre chacun leur tour une commande dans la liste de celles qui sont en attente, ils mettront entre 3 et 5 secondes pour la traiter et une fois fait ils remplissent une variable qui indiquera la dernière commande servie.
+
+Le majorHomme quant à lui va venir afficher tout ça. Il va afficher 1 ligne par serveur qui va indiquer la commande qu'il est en train de traiter. Ensuite il indiquera les commandes qui sont dans le tableau d'attente, le nombre qu'elles sont, et la dernière commande servie.
+
+Tout du long de cet exercice j'ai utilisé un Locker pour éviter que deux processus écrivent en même temps sur mes tableaux et donc limiter les erreurs dans le traitement des commandes
+
+- Exemples de stack trace:
+  ```
+  Nombre de serveurs : 3
+    Max de commande possible : 8
+
+    Le serveur 1 traite la commande 7I
+    Le serveur 2 ne traite pas de commande pour le moment
+    Le serveur 3 ne traite pas de commande pour le moment
+
+    Les commandes clients en attente :  ['8I', '46W']
+    Nombres de commandes attente :  2
+    Commande 37N est servie au client
+  ```
+
+  ```
+    Nombre de serveurs : 4
+    Max de commande possible : 10
+
+    Le serveur 1 traite la commande 34F
+    Le serveur 2 ne traite pas de commande pour le moment
+    Le serveur 3 ne traite pas de commande pour le moment
+    Le serveur 4 ne traite pas de commande pour le moment
+
+    Les commandes clients en attente :  ['14T']
+    Nombres de commandes attente :  1
+    Commande 25R est servie au client
+  ```
+
 ##  Game of life (5pts)
+
+
 ##  Fractal (3pts)
+

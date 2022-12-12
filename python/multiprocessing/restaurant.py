@@ -8,7 +8,6 @@
         - Batiste LALOI
 
 """
-
 CLEARSCR="\x1B[2J\x1B[;H"          #  Clear SCReen
 CLEAREOS = "\x1B[J"                #  Clear End Of Screen
 CLEARELN = "\x1B[2K"               #  Clear Entire LiNe
@@ -72,15 +71,20 @@ tabServeurs = []
 tabCommandes = []
 lastServie = ""
 endService = 0
-locker = mp.Lock()
+locker = threading.Lock()
 
 def clients():
     global tampon
     global T
+    ## Je viens créer au fur et à mesure mes commandes jusqu'à atteindre le nombre 
+    ## maximum de commande possible
     for i in range (0, T):
         if (i > 0):
+            ## Entre chaque commande j'attends de manière aléatoire entre 1 et 4 secondes
             sleeping = random.randint(1, 4)
             time.sleep(sleeping)
+        ## Je viens verrouiller ma liste de commandes et je le remplis d'une combinaison
+        ## Nombre de 1 à 50 et une letter au hasard entre A et Z
         with locker:
             tampon.append(str(random.randint(1, 50)) + str(random.choice(string.ascii_uppercase)))
 
@@ -90,27 +94,36 @@ def major_dHomme():
     global endService
     global lastServie
     global tabCommandes
+    ## Tant que je ne suis pas en fin de services et que j'ai des commandes encore en traitement
+    ## alors
     while (endService == 0 and len(tabCommandes) > 0):
+        ## Je verrouille ma variable
         with locker:
             effacer_ecran()
             curseur_invisible()
+            ## Pour chaque serveur j'affiche sur une ligne différente
             for i in range (1, S+1):
                 move_to(i, 0)
                 erase_line_from_beg_to_curs()
                 en_couleur(lyst_colors[i%len(lyst_colors)])
                 if (len(tabCommandes[i-1]) > 1):
+                    ## S'il traite une commande et son numéro
                     print('Le serveur',i,"traite la commande", tabCommandes[i-1])
                 else :
+                    ## S'il ne traite pas de commande
                     print('Le serveur',i,"ne traite pas de commande pour le moment")
             move_to(i+2, 0)
             erase_line_from_beg_to_curs()
             en_couleur(lyst_colors[i+1%len(lyst_colors)])
+            ## J'affiche les commandes en attente
             print("Les commandes clients en attente : ", tampon)
             move_to(i+3, 0)
             erase_line_from_beg_to_curs()
+            ## j'affiche le nombre de commande en attente
             print('Nombres de commandes attente : ', len(tampon))
             move_to(i+4, 0)
             erase_line_from_beg_to_curs()
+            ## Je viens afficher la dernière commande servie par les serveurs
             if (lastServie == ""):
                 print("Aucune commande n'a été servie pour le moment")
             else:
@@ -123,39 +136,55 @@ def serveurs(i):
     global lastServie
     global endService
     time.sleep(5)
+    ## Si je ne suis pas en fin de service, que j'ai des commandes en attentes
+    ## Et des commandes en traitement
     while (endService == 0 and len(tampon) > 0 and len(tabCommandes) > 0):
+        ## Je verrouille ma variable
         with locker:
+            ## Si j'ai des commandes en attente, j'assigne la tampon[0]
+            ## à mon serveur
             if (len(tampon) > 0):
                 tabCommandes[i] = tampon[0]
                 del tampon[0]
             else:
                 tabCommandes[i] = "0"
         time.sleep(2)
+        ## J'attends 2 secondes avant de traiter la commande
         with locker:
+            ## J'attends entre 1 et 3 secondes de manière aléatoire et je passe la commande 
+            ## en dernière servie
             sleeping = random.randint(1, 3)
             time.sleep(sleeping)
             lastServie = tabCommandes[i]
             tabCommandes[i] = "0"
         time.sleep(2)
 
-for i in range(0, S):
-    tabCommandes.append("0")
+if __name__ == '__main__':
 
-if platform.system() == "Darwin" :
-    mp.set_start_method('fork')
+    ## Je viens remplir mon tableau de commandes de 0
+    for i in range(0, S):
+        tabCommandes.append("0")
 
+    if platform.system() == "Darwin" :
+        mp.set_start_method('fork')
 
-processClient = mp.Process(target=clients, args=[])
-processClient.start()
+    ## Je viens créer mon processus client qui va créer mes commandes
+    processClient = threading.Thread(target=clients, args=[])
+    processClient.start()
 
-majorHomme = mp.Process(target=major_dHomme, args=[])
-majorHomme.start()
+    ## je viens créer mon processus majorHomme qui va afficher les informations
+    ## au fur et à mesure
+    majorHomme = threading.Thread(target=major_dHomme, args=[])
+    majorHomme.start()
 
-for i in range(0, S):
-    tabServeurs.append(mp.Process(target=serveurs, args=[i]))
-    tabServeurs[i].start()
+    ## Je crée un processus pour chaque serveur que je stocke dans mon tableau
+    ## tabServeurs
+    for i in range(0, S):
+        tabServeurs.append(threading.Thread(target=serveurs, args=[i]))
+        tabServeurs[i].start()
 
-for i in range(0, S):
-    tabServeurs[i].join()
-processClient.join()
-majorHomme.join()
+    ## Je join tous mes processus pour les faire terminer
+    for i in range(0, S):
+        tabServeurs[i].join()
+    processClient.join()
+    majorHomme.join()
