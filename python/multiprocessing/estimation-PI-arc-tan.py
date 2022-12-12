@@ -1,6 +1,6 @@
 """
     4IRC
-    Exercice course hippique
+    Exercice approximation de la valeur de PI par la méthode de l'arctan
     Groupe :
         - Maxime BATTU
         - Eileen BALAGUER

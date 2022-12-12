@@ -1,7 +1,7 @@
 """
     
     4IRC
-    Exercice course hippique
+    Exercice billes
     Groupe :
         - Maxime BATTU
         - Eileen BALAGUER

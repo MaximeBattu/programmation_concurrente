@@ -1,3 +1,13 @@
+"""
+    
+    4IRC
+    Exercice temperature-pression
+    Groupe :
+        - Maxime BATTU
+        - Eileen BALAGUER
+        - Batiste LALOI
+
+"""
 import multiprocessing as mp
 import random
 import time

@@ -1,3 +1,14 @@
+"""
+    
+    4IRC
+    Fichier utilitaire
+    Groupe :
+        - Maxime BATTU
+        - Eileen BALAGUER
+        - Batiste LALOI
+
+"""
+
 # Variables gloables de couleur
 RED="\033[31m"
 GREEN="\033[32m"

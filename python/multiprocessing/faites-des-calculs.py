@@ -1,7 +1,7 @@
 """
     
     4IRC
-    Exercice course hippique
+    Exercice de gestion de calculs
     Groupe :
         - Maxime BATTU
         - Eileen BALAGUER

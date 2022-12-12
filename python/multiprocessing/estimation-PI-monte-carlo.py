@@ -1,7 +1,7 @@
 """
     
     4IRC
-    Exercice course hippique
+    Exercice approximation de la valeur de PI par la méthode de Monte Carlo
     Groupe :
         - Maxime BATTU
         - Eileen BALAGUER

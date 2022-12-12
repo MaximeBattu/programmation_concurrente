@@ -1,7 +1,7 @@
 # Multiprocessing - S7
 
 Dans le cadre du module "Système d'exploitation et programmation concurrente", nous avons eu à réaliser différents exercices portant sur le principe de la parallélisation de processus (multiprocessing).
-Pour ce faire nous avons dû réaliser différents exercices chacun rapportant un certain nombre de point. Comme nous sommes trois dans notre groupe nous devons faire pour 30 points minimum d'exercice.
+Pour ce faire nous avons dû réaliser différents exercices chacun rapportant un certain nombre de points. Comme nous sommes trois dans notre groupe nous devons faire assez d'exercice afin d'obtenir 30 points minimum.
 
 Suite aux recommandations des professeurs référents de la matière, les exercices portants sur le tri (tri rapide, tri merge ...) n'ont pas été réalisés car jugés comme s'éloignant trop de la logique du multiprocessing abordée en cours.
 
@@ -23,7 +23,7 @@ Travail réalisé
         ``` 
         Leader: [Lettre du leader] Dernier : [Lettre du dernier] 
         ```
-- Faire un pari sur un cheval gagnat
+- Faire un pari sur un cheval gagnant
     - `Entrer une lettre entre A et T :`
 - Modification du dessin de base pour le remplacer par un bateau
     - `+|__A__/ `
@@ -32,18 +32,18 @@ Travail réalisé
 ## Faites des calculs (calculateurs & demandeurs) (3-5pts)
 
 ### Version 1 demandeur, `n` calculateurs
-  Le programme principal crée un certain nombre de processus "calculateurs" (par défaut, 2) qui attendent des expressions de calcul à résoudre dans une file d'attente (Queue). Un autre processus, appelé "demandeur", génère des expressions de calcul aléatoires et les met dans la file d'attente (Queue) pour être résolues par les processus "calculateurs". Les processus "calculateurs" résolvent les expressions de calcul et mettent le résultat dans une autre file d'attente (Queue). Le processus "demandeur" récupère les résultats des processus "calculateurs" et les affiche à l'écran. Le programme se termine lorsque tous les calculs ont été effectués.
+  Le programme principal créé un certain nombre de processus "calculateurs" (par défaut, 2) qui attendent des expressions de calcul à résoudre dans une file d'attente (Queue). Un autre processus, appelé "demandeur", génère des expressions de calculs aléatoires et les met dans la file d'attente (Queue) pour être résolues par les processus "calculateurs". Les processus "calculateurs" résolvent les expressions de calcul et mettent le résultat dans une autre file d'attente (Queue). Le processus "demandeur" récupère les résultats des processus "calculateurs" et les affiche à l'écran. Le programme se termine lorsque tous les calculs ont été effectués.
   - exemple de stack trace :
-  - ```
-    Combien de calculs voulez-vous lancer ? 2 par défaut
+```
+Combien de calculs voulez-vous lancer ? 2 par défaut
 
-    Combien de processus calculateurs ? 2 par défaut
+Combien de processus calculateurs ? 2 par défaut
 
-    Le fils a recu 3+4
-    Dans fils, le résultat = 7
-    Le fils a envoyé 7
-    3+4 = 7
-    ```
+Le fils a recu 3+4
+Dans fils, le résultat = 7
+Le fils a envoyé 7
+3+4 = 7
+```
 
 ## Gestionnaire des Billes (5pts)
 
@@ -242,6 +242,14 @@ def multiProcess():
         percentCompletion = round(pack * 100 / (size//NB_PROCESS))
         print("[" + "=" * (percentCompletion//2) + " " * (50 - percentCompletion//2) + "] " + str(percentCompletion) + "%", end="\r")
 
+```
+
+- Chacun de ces processus pointe sur une fonction `render_line()` qui traite chaque cellule d'une ligne, en appliquant la fonction :
+```python
+# Fonction qui traite une ligne
+def render_line(line, image):
+    for x in range(size):
+        calcul(x, line, image, 3*(line * size + x))
 ```
 
 - Récupération du nombre de process voulu par l'utilisateur, avec affichage du nombre de coeur disponible sur sa machine :
@@ -468,5 +476,5 @@ while True:
 
 ### Trace :
 
-Comme le rendu dans le console est dynamique, voici une vidéo de l'affichage dans la console, avec à gauche le jeu de la vie qui tourne dans une grille de 30x30, et à droite un affichage de HTOP, dans lequel on peut voir le charge réparties sur les différents coeurs du processeur de l'ordinateur : [Démo Game Of Life](https://youtu.be/c_IjUaFmcEo)
+Comme le rendu dans le console est dynamique, voici une vidéo de l'affichage dans la console, avec à gauche le jeu de la vie qui tourne dans une grille de 30x30, et à droite un affichage de **BASHTOP**, dans lequel on peut voir la charge répartie sur les différents coeurs du processeur de l'ordinateur : [Démo Game Of Life](https://youtu.be/c_IjUaFmcEo)
 

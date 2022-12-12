@@ -1,7 +1,7 @@
 """
     
     4IRC
-    Exercice course hippique
+    Exercice gestion des serveurs d'un restaurant
     Groupe :
         - Maxime BATTU
         - Eileen BALAGUER

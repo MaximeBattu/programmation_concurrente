@@ -1,3 +1,12 @@
+"""
+    4IRC
+    Exercice approximation de la valeur de PI par la méthode de l'esperance
+    Groupe :
+        - Maxime BATTU
+        - Eileen BALAGUER
+        - Batiste LALOI
+"""
+
 import time
 import multiprocessing as mp
 import math
