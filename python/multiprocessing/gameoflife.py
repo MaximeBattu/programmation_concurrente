@@ -1,3 +1,11 @@
+"""
+    4IRC
+    Exercice du clone du Jeu de la Vie
+    Groupe :
+        - Maxime BATTU
+        - Eileen BALAGUER
+        - Batiste LALOI
+"""
 import time
 import random
 import os
@@ -9,8 +17,10 @@ import numpy as np
 TAILLE = 30
 NB_PROCESS = 5
 
-def clear():
-    os.system("clear")
+ITERATION = 50
+
+def clear(): os.system("clear")
+def move_to(lig, col) : print("\033[" + str(lig) + ";" + str(col) + "f",end='')
 
 # Create a shared two dimensionnal array
 shared_current_grid = mp.Array(ctypes.c_int, TAILLE * TAILLE)
@@ -24,23 +34,19 @@ next_grid = np.frombuffer(shared_next_grid.get_obj(), ctypes.c_int)
 current_grid = current_grid.reshape((TAILLE, TAILLE))
 next_grid = next_grid.reshape((TAILLE, TAILLE))
 
-# Fill the starting grid 
-for ligne in current_grid :
-    for cellule in ligne :
-        cellule = 0
-
 def display_grid(grid):
+    print("_" * (2 * TAILLE + 1))
     for line in grid:
+        print("|", end="")
         for cell in line:
             if cell == 0:
-                print(" ", end="")
+                print("  ", end="")
             else:
-                print("X", end="")
+                print("██", end="")
         print("|")
-    print("‾"*TAILLE)
+    print("‾" * (2*TAILLE + 1))
 
 def addGlider(x, y, grid):
-    """adds a glider with top left cell at (i, j)"""
     glider = np.array([[0,   0, 1],
                        [1,  0, 1],
                        [0,  1, 1]])
@@ -59,7 +65,7 @@ def living_neighbours_count(x, y, grid):
                 count += 1
     return count
 
-# Fonction qui traire une cellule
+# Fonction qui traite une cellule
 def render_cell(x, y, current_grid, next_grid):
     living_neighbours = living_neighbours_count(x, y, current_grid)
     if current_grid[x][y] == 1:
@@ -78,15 +84,22 @@ def render_line(line, current_grid, next_grid):
         render_cell(line, cell, current_grid, next_grid)
 
 # Ajout d'une glider dans la grille de départ
-addGlider(1, 1, current_grid)
+# addGlider(1, 1, current_grid)
 
+# On remplis de manière aléatoire la grille, avec 20% de chance d'avoir une cellule vivante
 for i in range(TAILLE):
     for j in range(len(current_grid[i])):
         if random.randint(0, 4) == 0:
             current_grid[i][j] = 1
-            
 
+clear()
+
+cpt = 0
 while True:
+
+    # Effacer l'écran
+    move_to(0, 0)
+
     # Pack de processus
     for pack in range(TAILLE//NB_PROCESS):
         # print(f"Pack #{pack}")
@@ -102,6 +115,7 @@ while True:
     for i in range(TAILLE):
         for j in range(len(next_grid[i])):
             current_grid[i][j] = next_grid[i][j]
-
-    time.sleep(0.2)
-    clear()
+    
+    # time.sleep(0)
+    cpt += 1
+    print(f"Génération numéro : {cpt}")

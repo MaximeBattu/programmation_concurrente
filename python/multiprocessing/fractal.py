@@ -1,4 +1,13 @@
-# -*- coding: utf-8 -*-
+"""
+    
+    4IRC
+    Exercice Fractale
+    Groupe :
+        - Maxime BATTU
+        - Eileen BALAGUER
+        - Batiste LALOI
+
+"""
 import multiprocessing as mp
 import os
 import sys
@@ -56,10 +65,7 @@ def calcul(x, y, image, pixel_index):
     else:
         image[pixel_index + 0] = image[pixel_index + 1] = image[pixel_index + 2] = 0
 
-"""
-Maintenant créé une fonction qui peut créer 5 processus, chacun gérant le rendu d'une ligne
-Quand une ligne est terminée, le processus envoie le résultat au processus principal, qui l'écrit dans l'image, et demande ensuite la ligne suivante à rendre
-"""
+
 def render_line(line, image):
     for x in range(size):
         calcul(x, line, image, 3*(line * size + x))
